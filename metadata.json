@@ -1,0 +1,6 @@
+{
+  "name": "智慧冰箱主廚核心系統",
+  "description": "整合多模態冰箱盤點辨識、自訂條件主廚食譜推薦、食材精準扣除與動態換菜支援系統",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
