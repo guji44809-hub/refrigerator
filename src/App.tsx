@@ -70,9 +70,22 @@ export default function App() {
         }),
       });
 
-      const json = await res.json();
+      const text = await res.text();
+      let json: any = null;
+      try {
+        json = JSON.parse(text);
+      } catch (parseErr) {
+        if (res.status === 404) {
+          throw new Error('找不到後端 API (404)。請確認已部署 api/index.ts 與 vercel.json。');
+        } else if (res.status === 504) {
+          throw new Error('雲端函式運算逾時 (504)，請稍候再次點擊嘗試。');
+        } else {
+          throw new Error(`伺服器回應格式異常 (HTTP ${res.status})`);
+        }
+      }
+
       if (!res.ok) {
-        throw new Error(json.error || '辨識與食譜推薦失敗');
+        throw new Error(json?.error || '辨識與食譜推薦失敗');
       }
 
       setResult(json.data);
@@ -110,9 +123,20 @@ export default function App() {
         }),
       });
 
-      const json = await res.json();
+      const text = await res.text();
+      let json: any = null;
+      try {
+        json = JSON.parse(text);
+      } catch (parseErr) {
+        if (res.status === 404) {
+          throw new Error('找不到換菜 API (404)。');
+        } else {
+          throw new Error(`換菜回應異常 (HTTP ${res.status})`);
+        }
+      }
+
       if (!res.ok) {
-        throw new Error(json.error || '換菜失敗');
+        throw new Error(json?.error || '換菜失敗');
       }
 
       setResult(json.data);
