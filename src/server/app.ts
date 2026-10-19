@@ -492,8 +492,18 @@ function generateFallbackRecipes(inventory: any[], preferences: any) {
   return recipes;
 }
 
-// 1. Multimodal Inventory & Recipe Recommendation
-app.post('/api/fridge/analyze-and-recommend', async (req, res) => {
+// Health Check endpoint for Vercel and monitoring
+app.get(['/api', '/api/health', '/health'], (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'smart-fridge-chef-api',
+    hasApiKey: !!(process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY),
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// 1. Multimodal Inventory & Recipe Recommendation (supports both /api/fridge and /fridge paths)
+app.post(['/api/fridge/analyze-and-recommend', '/fridge/analyze-and-recommend'], async (req, res) => {
   try {
     const { image, mimeType, preferences, manualInventory } = req.body;
 
@@ -628,7 +638,7 @@ ${JSON.stringify(manualInventory, null, 2)}
 });
 
 // 2. Dynamic Dish Replacement ("動態換菜支援")
-app.post('/api/fridge/replace-dish', async (req, res) => {
+app.post(['/api/fridge/replace-dish', '/fridge/replace-dish'], async (req, res) => {
   try {
     const {
       detected_inventory,
